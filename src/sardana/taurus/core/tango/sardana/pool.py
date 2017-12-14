@@ -1637,6 +1637,12 @@ class MeasurementGroup(PoolElement):
     def setAcquisitionMode(self, acqMode):
         self.getAcquisitionModeObj().write(acqMode)
 
+    def getStartIndex(self):
+        return self._getAttrValue('StartIndex')
+
+    def setStartIndex(self, start_index):
+        self.write_attribute('StartIndex', start_index)
+
     def getSynchronizationObj(self):
         return self._getAttrEG('Synchronization')
 

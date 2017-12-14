@@ -261,7 +261,7 @@ class PoolAcquisition(PoolAction):
                     args = ()
                     kwargs = self._sw_acq_config
                     kwargs['synch'] = True
-                    kwargs['idx'] = value
+                    kwargs['idx'] = value + kwargs['start_index']
                     self._sw_acq._started = True
                     get_thread_pool().add(self._sw_acq.run, *args, **kwargs)
             if self._0d_config:
@@ -275,7 +275,7 @@ class PoolAcquisition(PoolAction):
                     args = ()
                     kwargs = self._0d_config
                     kwargs['synch'] = True
-                    kwargs['idx'] = value
+                    kwargs['idx'] = value + kwargs['start_index']
                     self._0d_acq._started = True
                     self._0d_acq._stopped = False
                     self._0d_acq._aborted = False
@@ -507,6 +507,7 @@ class PoolAcquisitionBase(PoolAction):
         self._integ_time = integ_time = kwargs.get("integ_time")
         self._mon_count = mon_count = kwargs.get("monitor_count")
         self._repetitions = repetitions = kwargs.get("repetitions")
+        self._start_index = kwargs.get('start_index')
         if integ_time is None and mon_count is None:
             raise Exception("must give integration time or monitor counts")
         if integ_time is not None and mon_count is not None:

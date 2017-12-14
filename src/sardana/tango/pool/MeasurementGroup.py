@@ -248,6 +248,13 @@ class MeasurementGroup(PoolGroupDevice):
         synchronization = self._synchronization_str2enum(synchronization)
         self.measurement_group.synchronization = synchronization
 
+    def read_StartIndex(self, attr):
+        start_index = self.measurement_group.start_index
+        attr.set_value(start_index)
+
+    def write_StartIndex(self, attr):
+        self.measurement_group.start_index = attr.get_write_value()
+
     def read_LatencyTime(self, attr):
         latency_time = self.measurement_group.latency_time
         attr.set_value(latency_time)
@@ -313,6 +320,9 @@ class MeasurementGroupClass(PoolGroupDeviceClass):
                              'Display level': DispLevel.EXPERT}],
         'LatencyTime': [[DevDouble, SCALAR, READ],
                         {'Display level': DispLevel.EXPERT}],
+        'StartIndex': [[DevLong, SCALAR, READ_WRITE],
+                       {'Memorized': "true",
+                        'Display level': DispLevel.OPERATOR}]
     }
     attr_list.update(PoolGroupDeviceClass.attr_list)
 

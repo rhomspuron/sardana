@@ -110,6 +110,7 @@ class PoolMeasurementGroup(PoolGroupElement):
 
     def __init__(self, **kwargs):
         self._state_lock = threading.Lock()
+        self._start_index = 0
         self._monitor_count = None
         self._repetitions = 1
         self._acquisition_mode = AcqMode.Timer
@@ -180,6 +181,7 @@ class PoolMeasurementGroup(PoolGroupElement):
             if element.get_type() is ElementType.TriggerGate:
                 return
         return PoolGroupElement.add_user_element(self, element, index)
+
     # -------------------------------------------------------------------------
     # configuration
     # -------------------------------------------------------------------------
@@ -641,6 +643,24 @@ class PoolMeasurementGroup(PoolGroupElement):
                             doc="latency time between two consecutive acquisitions")
 
     # -------------------------------------------------------------------------
+    # start index
+    # -------------------------------------------------------------------------
+
+    def get_start_index(self):
+        return self._start_index
+
+    def set_start_index(self, start_index, propagate=1):
+        self._start_index = start_index
+
+        if not propagate:
+            return
+        self.fire_event(EventType("startindex", priority=propagate),
+                        start_index)
+
+    start_index = property(get_start_index, set_start_index,
+                           doc="the current start_index")
+
+    # -------------------------------------------------------------------------
     # acquisition
     # -------------------------------------------------------------------------
 
@@ -658,6 +678,8 @@ class PoolMeasurementGroup(PoolGroupElement):
                 kwargs['monitor'] = self._monitor
             kwargs['synchronization'] = self._synchronization
             kwargs['moveable'] = self._moveable_obj
+            kwargs['start_index'] = self._start_index
+            self._start_index = 0
             # start acquisition
             self.acquisition.run(**kwargs)
 

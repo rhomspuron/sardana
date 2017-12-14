@@ -1901,9 +1901,6 @@ class CAcquisition(object):
             self.warning(msg, exc_info=1)
 
         info = {'label': full_name}
-        idx = np.array(value_buffer['index'])
-        idx += self._index_offset
-        value_buffer['index'] = idx.tolist()
         info.update(value_buffer)
         # info is a dictionary with at least keys: label, data,
         # index and its values are of type string for label and
@@ -2301,10 +2298,11 @@ class CTScan(CScan, CAcquisition):
             theoretical_positions = generate_positions(motors, starts, finals,
                                                        nr_points)
             theoretical_timestamps = generate_timestamps(synch, dt_timestamp)
-            self._index_offset = i * self.macro.nr_points
+            start_index = i * nr_points
+            measurement_group.setStartIndex(start_index)
             for index, data in theoretical_positions.items():
                 data.update(theoretical_timestamps[index])
-                initial_data[index + self._index_offset] = data
+                initial_data[index + start_index] = data
             # TODO: this changes the initial data on-the-fly - seems like not
             # the best practice
             self.data.initial_data = initial_data
