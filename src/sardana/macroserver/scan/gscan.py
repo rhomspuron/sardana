@@ -2158,7 +2158,10 @@ class CTScan(CScan, CAcquisition):
                 return
 
             # at least one motor must have different start and final positions
-            if all(self.macro.starts == self.macro.finals):
+            check_result = self.macro.starts == self.macro.finals
+            if isinstance(check_result, bool):
+                check_result = [check_result]
+            if all(check_result):
                 if len(self.macro.starts) > 1:
                     msg = "Scan start and end must be different for at " \
                           "least one motor"
